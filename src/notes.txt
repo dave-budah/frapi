@@ -1,0 +1,14 @@
+
+
+
+# npm run db:create src/migrations/users :  to create migrations
+# npm run db:migrate : to run migrations
+
+Postgres Commands
+
+psql postgres postgres : to launch postgres in terminal
+\c database-name : to move to specific database
+\dt : to display tables
+SELECT * FROM TABLE-NAME; : TO VIEW DATA IN A TABLE.
+
+NB* Always remember to check the migrations to remove any repetitions in the migration tables
