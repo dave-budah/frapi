@@ -48,6 +48,10 @@ export class UserService {
     };
   }
 
+  async findById(id: number): Promise<User> {
+    return this.userRepository.findOne({ where: { id } });
+  }
+
   async login(loginUserDto: LoginUserDto): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { email: loginUserDto.email },
@@ -65,16 +69,31 @@ export class UserService {
     delete user.password;
     return user;
   }
-  findAll() {
-    return `This action returns all user`;
+
+  // Fetch all users in database
+  async findAll(): Promise<User[]> {
+    return await this.userRepository.find();
   }
 
   findOne(id: number) {
     return `This action returns a #${id} user`;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  //  Update user profile
+  async update(userId: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.findById(userId);
+    Object.assign(user, updateUserDto);
+    return await this.userRepository.save(user);
+  }
+
+  // Delete user profile
+  async deleteAccount(userId: number): Promise<void> {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    await this.userRepository.delete(userId);
   }
 
   remove(id: number) {

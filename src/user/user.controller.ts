@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards, Put } from '@nestjs/common';
 import { UserService } from '@app/user/user.service';
 import { CreateUserDto } from '@app/user/dto/create-user.dto';
 import { UpdateUserDto } from '@app/user/dto/update-user.dto';
 import { UserResponse } from '@app/user/types/user..response';
-import any = jasmine.any;
-import { User } from '@app/user/entities/user.entity';
 import { LoginUserDto } from '@app/user/dto/login-user.dto';
+import { UserDecorator } from '@app/user/decorators/user.decorator';
+import { User } from '@app/user/entities/user.entity';
+import { AuthGuard } from '@app/user/guards/auth.guard';
 
 @Controller()
 export class UserController {
@@ -25,9 +26,22 @@ export class UserController {
     return this.userService.buildUserResponse(user);
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  @Get('user')
+  @UseGuards(AuthGuard)
+  async currentUser(@UserDecorator() user: User): Promise<UserResponse> {
+    return this.userService.buildUserResponse(user);
+  }
+
+  @Put('user')
+  @UseGuards(AuthGuard)
+  async updateCurrentUser(@UserDecorator('id') currentUserId: number, @Body('user') updateUserDto: UpdateUserDto): Promise<UserResponse> {
+    const user = await this.userService.update(currentUserId, updateUserDto);
+    return this.userService.buildUserResponse(user);
+  }
+
+  @Get('users')
+  async findAll(): Promise<User[]> {
+    return await this.userService.findAll();
   }
 
   @Get(':id')
@@ -40,8 +54,9 @@ export class UserController {
     return this.userService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @Delete('user')
+  @UseGuards(AuthGuard)
+  async deleteCurrentUser(@UserDecorator('id') currentUserId: number): Promise<void> {
+    await this.userService.deleteAccount(currentUserId);
   }
 }

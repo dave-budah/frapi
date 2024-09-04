@@ -9,6 +9,10 @@ Postgres Commands
 psql postgres postgres : to launch postgres in terminal
 \c database-name : to move to specific database
 \dt : to display tables
+\d table_name : to display table columns
 SELECT * FROM TABLE-NAME; : TO VIEW DATA IN A TABLE.
+TRUNCATE TABLE users; to truncate a table
+ALTER TABLE tbl_name DROP COLUMN col_name; to delete a column in a table
+\x  to show extended display
 
 NB* Always remember to check the migrations to remove any repetitions in the migration tables
