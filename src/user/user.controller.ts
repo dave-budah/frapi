@@ -39,21 +39,6 @@ export class UserController {
     return this.userService.buildUserResponse(user);
   }
 
-  @Get('users')
-  async findAll(): Promise<User[]> {
-    return await this.userService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
   @Delete('user')
   @UseGuards(AuthGuard)
   async deleteCurrentUser(@UserDecorator('id') currentUserId: number): Promise<void> {
