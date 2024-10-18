@@ -18,6 +18,8 @@ export class ArticleService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
+
+  // Create articles
   async create(currentUser: User, createArticleDto: CreateArticleDto): Promise<Article> {
     const article = new Article();
     Object.assign(article, createArticleDto);
@@ -38,6 +40,7 @@ export class ArticleService {
     return { article };
   }
 
+  // Find articles by slug
   async findBySlug(slug: string): Promise<Article> {
     return await this.articleRepository.findOne({ where: { slug } });
   }
@@ -75,10 +78,12 @@ export class ArticleService {
   async findAll(currentUser: number, query: any): Promise<ArticlesResponse> {
     const queryBuilder = this.dataSource.getRepository(Article).createQueryBuilder('articles').leftJoinAndSelect('articles.author', 'author');
 
+    // Sort by Tag
     if (query.tag) {
       queryBuilder.andWhere('articles.tagList LIKE :tag', { tag: `%${query.tag}%` });
     }
 
+    // Filter results by author.
     if (query.author) {
       const author = await this.userRepository.findOne({ where: { username: query.author } });
       queryBuilder.andWhere('articles.authorId = :id', { id: author.id });
@@ -97,6 +102,7 @@ export class ArticleService {
         queryBuilder.andWhere('1=0');
       }
     }
+    //  Oder by the latest
     queryBuilder.orderBy('articles.createdAt', 'DESC');
 
     const articlesCount = await queryBuilder.getCount();
