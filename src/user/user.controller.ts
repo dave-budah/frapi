@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, UsePipes, ValidationPipe, UseGuards, Put } from '@nestjs/common';
 import { UserService } from '@app/user/user.service';
 import { CreateUserDto } from '@app/user/dto/create-user.dto';
 import { UpdateUserDto } from '@app/user/dto/update-user.dto';
